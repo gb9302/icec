@@ -1,31 +1,19 @@
-# IceC Lab v0.5
+# IceC Lab v0.6 — Scientific Engine
 
-Quarta iterazione del laboratorio digitale per il bilanciamento di gelati, sorbetti e granite.
+Web app statica per il bilanciamento di gelati, sorbetti e granite, derivata dal workbook IceC.
 
-## Novita v0.5
-- Salvataggio ricetta separato dalle note post-produzione.
-- Le note post-produzione si aggiungono dal dettaglio della ricetta nel Ricettario.
-- Ogni nota conserva uno snapshot della formulazione a cui si riferisce.
-- Le note sono visibili in sola lettura quando la ricetta viene caricata nel Bilanciatore.
-- Le singole note possono essere eliminate con conferma.
-- Profili & range: controllo separato di visibilita e partecipazione alla valutazione per i parametri tecnici.
-- Granita con una configurazione iniziale piu essenziale.
-- Nuova palette blu, azzurro e celeste, piu luminosa.
-- Footer aggiornato a IceC Lab v0.5.
+## Novità v0.6
+- Identità della ricetta ben visibile nel riquadro Formula.
+- Indicatore “Modifiche non salvate” durante l'editing.
+- Primo Scientific Engine prudenziale: PAC miscela, PAC su acqua, acqua e solidi letti come grandezze distinte.
+- Eliminata la precedente conversione lineare temperatura → target PAC: la temperatura resta un contesto di valutazione, non una scorciatoia matematica.
+- Controlli di coerenza dati: solidi + acqua e zuccheri vs carboidrati.
+- PAC su acqua disponibile in modalità Avanzata.
+- Pannello scientifico che esplicita i limiti del modello: la v0.6 non pretende di stimare ancora la quota d'acqua congelata.
+- Profili e range restano personalizzabili e separati dalle condizioni di servizio.
+
+## Nota scientifica
+La v0.6 adotta un approccio conservativo. PAC/POD sono indicatori di formulazione utili, ma una previsione della curva di congelamento richiede un modello che tenga conto della composizione dei soluti e della concentrazione della fase non congelata. Per questo IceC non trasforma automaticamente un PAC in “morbidezza a -18 °C”.
 
 ## Avvio
-Aprire `index.html` in un browser moderno oppure pubblicare la cartella con GitHub Pages.
-
-## Persistenza
-Questa versione continua a usare `localStorage` per mantenere compatibilita con l'MVP. Una futura release introdurra persistenza server-side e account.
-
-## Backlog gia concordato
-- Generazione/stampa PDF della ricetta.
-- Acquisizione valori nutrizionali da fotocamera smartphone con revisione prima del salvataggio.
-
-
-## v0.5
-- Salvataggio ricette con identità univoca e nomi non duplicabili.
-- Salva modifiche per ricette esistenti e Salva come nuova per creare copie.
-- Azioni di salvataggio spostate sotto il bilanciamento.
-- Campi ingrediente mancanti evidenziati in giallo e aggiornati mentre si compila il form.
+Aprire `index.html` oppure pubblicare la cartella con GitHub Pages. I dati personali continuano a essere salvati nel localStorage del browser.
