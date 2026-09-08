@@ -1,19 +1,16 @@
-# IceC Lab v0.6 — Scientific Engine
+# IceC Lab v0.7 — Smart Balancer
 
-Web app statica per il bilanciamento di gelati, sorbetti e granite, derivata dal workbook IceC.
+## Novità v0.7
+- Scientific Engine visibile esclusivamente in modalità Avanzata.
+- Pulsanti informativi sui principali parametri tecnici (PAC, POD, PAC su acqua, MSNF, acqua, solidi, ecc.).
+- Distinzione visiva tra calcolo compositivo, target empirico e futura predizione.
+- Primo Smart Balancer: diagnostica contestuale per zuccheri, PAC, grassi e solidi con indicazioni prudenti sulle leve di formulazione.
+- Il contesto freezer domestico viene spiegato senza conversioni lineari temperatura/PAC.
+- PAC su acqua presentato esplicitamente come indicatore comparativo, non come valore con un target universale.
+- Footer e Scientific Engine aggiornati a v0.7.
 
-## Novità v0.6
-- Identità della ricetta ben visibile nel riquadro Formula.
-- Indicatore “Modifiche non salvate” durante l'editing.
-- Primo Scientific Engine prudenziale: PAC miscela, PAC su acqua, acqua e solidi letti come grandezze distinte.
-- Eliminata la precedente conversione lineare temperatura → target PAC: la temperatura resta un contesto di valutazione, non una scorciatoia matematica.
-- Controlli di coerenza dati: solidi + acqua e zuccheri vs carboidrati.
-- PAC su acqua disponibile in modalità Avanzata.
-- Pannello scientifico che esplicita i limiti del modello: la v0.6 non pretende di stimare ancora la quota d'acqua congelata.
-- Profili e range restano personalizzabili e separati dalle condizioni di servizio.
+## Principio scientifico
+IceC separa ciò che calcola dai dati della formula, i target empirici configurati nel profilo e le predizioni del comportamento fisico. La v0.7 non stima ancora percentuale di acqua congelata o consistenza alla temperatura selezionata: per farlo in modo affidabile serviranno dati più granulari sulla composizione dei soluti e un modello crioscopico dedicato.
 
-## Nota scientifica
-La v0.6 adotta un approccio conservativo. PAC/POD sono indicatori di formulazione utili, ma una previsione della curva di congelamento richiede un modello che tenga conto della composizione dei soluti e della concentrazione della fase non congelata. Per questo IceC non trasforma automaticamente un PAC in “morbidezza a -18 °C”.
-
-## Avvio
-Aprire `index.html` oppure pubblicare la cartella con GitHub Pages. I dati personali continuano a essere salvati nel localStorage del browser.
+## Pubblicazione
+Applicazione statica compatibile con GitHub Pages. Sostituire i file della release precedente mantenendo lo stesso percorso del repository. I dati utente continuano a essere salvati nel localStorage del browser.
