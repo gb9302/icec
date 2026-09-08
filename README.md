@@ -1,8 +1,8 @@
-# IceC Lab v0.4
+# IceC Lab v0.5
 
 Quarta iterazione del laboratorio digitale per il bilanciamento di gelati, sorbetti e granite.
 
-## Novita v0.4
+## Novita v0.5
 - Salvataggio ricetta separato dalle note post-produzione.
 - Le note post-produzione si aggiungono dal dettaglio della ricetta nel Ricettario.
 - Ogni nota conserva uno snapshot della formulazione a cui si riferisce.
@@ -11,7 +11,7 @@ Quarta iterazione del laboratorio digitale per il bilanciamento di gelati, sorbe
 - Profili & range: controllo separato di visibilita e partecipazione alla valutazione per i parametri tecnici.
 - Granita con una configurazione iniziale piu essenziale.
 - Nuova palette blu, azzurro e celeste, piu luminosa.
-- Footer aggiornato a IceC Lab v0.4.
+- Footer aggiornato a IceC Lab v0.5.
 
 ## Avvio
 Aprire `index.html` in un browser moderno oppure pubblicare la cartella con GitHub Pages.
@@ -22,3 +22,10 @@ Questa versione continua a usare `localStorage` per mantenere compatibilita con 
 ## Backlog gia concordato
 - Generazione/stampa PDF della ricetta.
 - Acquisizione valori nutrizionali da fotocamera smartphone con revisione prima del salvataggio.
+
+
+## v0.5
+- Salvataggio ricette con identità univoca e nomi non duplicabili.
+- Salva modifiche per ricette esistenti e Salva come nuova per creare copie.
+- Azioni di salvataggio spostate sotto il bilanciamento.
+- Campi ingrediente mancanti evidenziati in giallo e aggiornati mentre si compila il form.
