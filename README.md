@@ -1,26 +1,24 @@
-# IceC Lab v0.3
+# IceC Lab v0.4
 
-Web MVP del laboratorio digitale per il bilanciamento di gelati, sorbetti e granite.
+Quarta iterazione del laboratorio digitale per il bilanciamento di gelati, sorbetti e granite.
 
-## Novita v0.3
-- Ricettario con ricerca testuale e filtri per categoria.
-- Modifica ricetta in una scheda dedicata, con categoria, note generali e salvataggio esplicito.
-- Eliminazione ricette con conferma.
-- Ingredienti: evidenza dei campi mancanti nel form di modifica.
-- Eliminazione ingredienti con conferma e blocco se l'ingrediente e usato in una ricetta.
-- Badge mostrato solo per ingredienti che richiedono attenzione.
-- Diario di produzione separato dalle note generali della ricetta, con storico datato, quantita e condizioni di servizio.
-- Nuova palette piu luminosa e giocosa.
-- Versione applicazione visibile nel footer.
+## Novita v0.4
+- Salvataggio ricetta separato dalle note post-produzione.
+- Le note post-produzione si aggiungono dal dettaglio della ricetta nel Ricettario.
+- Ogni nota conserva uno snapshot della formulazione a cui si riferisce.
+- Le note sono visibili in sola lettura quando la ricetta viene caricata nel Bilanciatore.
+- Le singole note possono essere eliminate con conferma.
+- Profili & range: controllo separato di visibilita e partecipazione alla valutazione per i parametri tecnici.
+- Granita con una configurazione iniziale piu essenziale.
+- Nuova palette blu, azzurro e celeste, piu luminosa.
+- Footer aggiornato a IceC Lab v0.4.
 
 ## Avvio
-Apri `index.html` in un browser moderno oppure pubblica l'intera cartella con GitHub Pages.
+Aprire `index.html` in un browser moderno oppure pubblicare la cartella con GitHub Pages.
 
 ## Persistenza
-Questa versione continua intenzionalmente a usare `localStorage` del browser. I dati inseriti o modificati non vengono sincronizzati tra browser o dispositivi.
+Questa versione continua a usare `localStorage` per mantenere compatibilita con l'MVP. Una futura release introdurra persistenza server-side e account.
 
 ## Backlog gia concordato
-- Esportazione/stampa PDF della ricetta e della scheda di produzione.
-- Acquisizione dei valori nutrizionali da foto/fotocamera smartphone con revisione prima del salvataggio.
-- Backend e database persistente multiutente.
-- Motore scientifico avanzato e modello crioscopico.
+- Generazione/stampa PDF della ricetta.
+- Acquisizione valori nutrizionali da fotocamera smartphone con revisione prima del salvataggio.
