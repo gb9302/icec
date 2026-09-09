@@ -1,20 +1,16 @@
-# IceC Lab v0.7.1 — Smart Balancer
+# IceC Lab v0.8 — Smart Balancer / Sugar Intelligence
 
-## Novità v0.7.1
-- Scientific Engine visibile esclusivamente in modalità Avanzata.
-- Pulsanti informativi sui principali parametri tecnici (PAC, POD, PAC su acqua, MSNF, acqua, solidi, ecc.).
-- Distinzione visiva tra calcolo compositivo, target empirico e futura predizione.
-- Primo Smart Balancer: diagnostica contestuale per zuccheri, PAC, grassi e solidi con indicazioni prudenti sulle leve di formulazione.
-- Il contesto freezer domestico viene spiegato senza conversioni lineari temperatura/PAC.
-- PAC su acqua presentato esplicitamente come indicatore comparativo, non come valore con un target universale.
-- Footer e Scientific Engine aggiornati a v0.7.1.
+## Novità v0.8
+- Mantiene la v0.7.1 come baseline e le stesse chiavi localStorage: ingredienti, ricette, profili e note esistenti restano compatibili.
+- Scientific Engine disponibile solo in modalità Avanzata.
+- Nuovi campi opzionali per la composizione zuccherina degli ingredienti: saccarosio, destrosio/glucosio, fruttosio, lattosio, maltosio e zucchero invertito.
+- Indicatore di copertura/confidenza della composizione zuccherina della ricetta.
+- Smart Balancer multivariato: interpreta insieme PAC, POD, zuccheri, solidi, grassi e profilo prodotto.
+- Diagnostica specifica per Granita e profili a base acqua.
+- Se la composizione zuccherina non è sufficientemente nota, IceC dichiara esplicitamente che l'analisi PAC/POD è parziale.
 
-## Principio scientifico
-IceC separa ciò che calcola dai dati della formula, i target empirici configurati nel profilo e le predizioni del comportamento fisico. La v0.7.1 non stima ancora percentuale di acqua congelata o consistenza alla temperatura selezionata: per farlo in modo affidabile serviranno dati più granulari sulla composizione dei soluti e un modello crioscopico dedicato.
+## Nota scientifica
+I nuovi campi di dettaglio non sostituiscono PAC/POD già presenti nel database e non vengono usati per inventare automaticamente valori mancanti. Servono a costruire progressivamente un modello più trasparente e affidabile. La v0.8 non stima ancora acqua congelata o consistenza alla temperatura selezionata.
 
-## Pubblicazione
-Applicazione statica compatibile con GitHub Pages. Sostituire i file della release precedente mantenendo lo stesso percorso del repository. I dati utente continuano a essere salvati nel localStorage del browser.
-
-
-## Hotfix v0.7.1
-Ripristinata la funzione di rendering della completezza ingredienti, accidentalmente rimossa in v0.7. Il bug interrompeva l'inizializzazione dell'interfaccia e faceva apparire vuoti Ingredienti e Ricettario senza cancellare i dati dal localStorage.
+## Deploy GitHub Pages
+Pubblicare il contenuto della cartella `IceC-Web` nel repository. Non cancellare il localStorage del browser durante l'aggiornamento.
