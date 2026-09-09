@@ -1,4 +1,4 @@
-# IceC Lab v0.8.2 — Ingredient Data Quality
+# IceC Lab v0.8.3 — Ingredient Data Quality
 
 ## Novità v0.8
 - Mantiene la v0.7.1 come baseline e le stesse chiavi localStorage: ingredienti, ricette, profili e note esistenti restano compatibili.
@@ -25,10 +25,16 @@ Pubblicare il contenuto della cartella `IceC-Web` nel repository. Non cancellare
 - Nessuna deduzione automatica per prodotti complessi non riconoscibili.
 
 
-## v0.8.2
+## v0.8.3
 
 - Corretto il selettore CSS che mostrava erroneamente “Zucchero specifico” anche su campi base come MSNF, PAC, POD, costo, acqua e solidi.
 - Rinominati i campi in “Solidi totali / Sostanza secca” e “Acqua / Umidità”.
 - Aggiunto controllo immediato di coerenza: sostanza secca + umidità deve essere circa 100% (tolleranza 0,5 punti).
 - Le proposte automatiche IceC restano opzionali e non sovrascrivono automaticamente i dati inseriti; l’interfaccia ricorda che i dati specifici dichiarati dal produttore hanno priorità.
 - Nessuna modifica alle chiavi localStorage: compatibile con i dati delle release precedenti.
+
+
+## Hotfix v0.8.3
+- Ripristializza esplicitamente lo stato dei filtri del Ricettario (`recipeFilter` e `recipeQuery`).
+- Corregge il ReferenceError che interrompeva l’avvio dopo il rendering degli Ingredienti: il selettore ricette nel Bilanciatore risultava popolato, ma Ricettario e Profili & range restavano vuoti.
+- Nessuna modifica alle chiavi localStorage o ai dati utente.

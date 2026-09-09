@@ -1,6 +1,6 @@
 const D=window.ICEC_DATA;
 const KEYS={recipes:'icec_user_recipes_v2',ingredients:'icec_ingredients_v2',profiles:'icec_profiles_v2',recipeMeta:'icec_recipe_meta_v2',productions:'icec_productions_v3',feedbacks:'icec_feedbacks_v4'};
-const ENGINE_VERSION='0.8.1';
+const ENGINE_VERSION='0.8.3';
 const DEFAULT_PROFILES={
  cream:{label:'Creme / base latte',ranges:{sugars:[18,22],fat:[7,16],msnf:[7,12],solids:[37,46],pac:[22,28],pod:[16,22]}},
  choc:{label:'Cioccolato',ranges:{sugars:[18,23],fat:[6,14],msnf:[5,11],solids:[38,48],pac:[22,29],pod:[16,23]}},
@@ -16,6 +16,7 @@ function normalizeProfiles(ps){Object.values(ps).forEach(p=>{p.display=p.display
 profiles=normalizeProfiles(profiles); let draftProfiles=clone(profiles);
 let ingredientDB=getJSON(KEYS.ingredients,null)||D.ingredients.map(i=>({...i,_legacy:true}));
 let state={items:[],advanced:false,profile:'cream',service:'display',temp:-13,loadedId:null,loadedName:'Nuova ricetta',dirty:false};
+let recipeFilter='all', recipeQuery='';
 function userRecipes(){return getJSON(KEYS.recipes,[])} function recipeMeta(){return getJSON(KEYS.recipeMeta,{})}
 function allRecipes(){let meta=recipeMeta();return [...D.recipes.filter(r=>!meta[r.id]?.deleted).map(r=>({...r,name:meta[r.id]?.name||r.name,category:meta[r.id]?.category||'unclassified',notes:meta[r.id]?.notes||r.notes||'',items:meta[r.id]?.itemsOverride||r.items})),...userRecipes()]}
 function ing(id){return ingredientDB.find(x=>x.id===id)}
