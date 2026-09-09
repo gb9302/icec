@@ -14,3 +14,12 @@ I nuovi campi di dettaglio non sostituiscono PAC/POD già presenti nel database 
 
 ## Deploy GitHub Pages
 Pubblicare il contenuto della cartella `IceC-Web` nel repository. Non cancellare il localStorage del browser durante l'aggiornamento.
+
+
+## v0.8.1
+- Toggle Vista avanzata nella scheda ingrediente.
+- Composizione zuccherina spostata nella vista avanzata e trattata come dato opzionale.
+- Campi avanzati vuoti = sconosciuto, non zero.
+- Provenienza composizione: dichiarata, calcolata, stimata o sconosciuta.
+- Proposta automatica prudenziale per ingredienti semplici riconoscibili (saccarosio, destrosio, fruttosio, lattosio, maltosio, zucchero invertito e ingredienti lattiero-caseari semplici).
+- Nessuna deduzione automatica per prodotti complessi non riconoscibili.
