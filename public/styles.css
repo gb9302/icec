@@ -24,5 +24,5 @@ aside{background:linear-gradient(180deg,#1779bd,#12639f)}.brand span{color:#ccef
 @media(max-width:650px){.sugarFormGrid{grid-template-columns:1fr 1fr}}
 .dbStatus{position:fixed;right:18px;bottom:16px;z-index:30;background:#fff;border:1px solid #cbd5e1;border-radius:999px;padding:7px 11px;font-size:12px;box-shadow:0 3px 14px #0001;color:#475569}.dbStatus.ok{border-color:#86efac;color:#166534}.dbStatus.bad{border-color:#fca5a5;color:#991b1b}
 
-/* Next v0.3.1 Data Safety */
+/* Next v0.3.2 Update & Operations */
 .dataSafety{margin-top:14px}.safetyActions{display:flex;gap:8px;flex-wrap:wrap}.fileButton{display:inline-flex;align-items:center;border:1px solid #d4cdc2;background:#fff;padding:8px 11px;border-radius:7px;color:var(--ink);cursor:pointer;font-size:13px}.fileButton input{display:none}.integrityResult{margin-top:12px;padding:10px 12px;border-radius:9px;background:#f5f9fc;border:1px solid var(--line);font-size:12px;line-height:1.5}.integrityOk{background:#eef9f3;border-color:#bfe4cf;color:#286044}.integrityBad{background:#fff4e6;border-color:#efc37b;color:#815b18}.safetyHint{font-size:11px;color:var(--muted);margin:10px 0 0}

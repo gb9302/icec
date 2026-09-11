@@ -1,59 +1,54 @@
-# IceC Lab Next v0.3.1 - Data Safety & Integrity
+# IceC Lab Next v0.3.2 - Update & Operations
 
-Questa release consolida la v0.3: PostgreSQL resta la fonte primaria e vengono aggiunti backup, ripristino, export JSON e controlli di integrita.
+PostgreSQL resta la fonte primaria. Questa release introduce un workflow permanente basato su Git per aggiornare la singola installazione `~/projects/icec`, senza creare una nuova cartella a ogni release.
 
-## Aggiornamento dalla v0.3 senza perdere il database
-La v0.3.1 usa esplicitamente lo stesso nome progetto Compose della cartella `IceC-Lab-Next-v0.3` (`icec-lab-next-v03`). In questo modo riutilizza il volume `icec-lab-next-v03_icec_postgres_data` creato dalla v0.3.
+## Prima installazione della v0.3.2 sul branch `next`
+Questa e l'ultima release che richiede un aggiornamento manuale dei file. Dopo aver portato questi file nel branch `next` e averli committati/pushati, gli aggiornamenti successivi si eseguono con `./scripts/update.sh`.
 
-Non usare `docker compose down -v`.
+Il progetto Compose resta `icec-lab-next-v03`, quindi continua a usare il volume PostgreSQL esistente. Non usare `docker compose down -v`.
 
-```bash
-cp .env.example .env
-docker compose up -d --build
-docker compose ps
-```
-
-Apri http://localhost:3000 e verifica che ingredienti e ricette siano presenti.
-
-## Verifica integrita
-In **Profili & range > Sicurezza dati** usa **Verifica integrita**. Il controllo verifica conteggi, note orfane e nomi duplicati ignorando maiuscole/minuscole.
-
-Da API e disponibile anche:
+## Aggiornamento automatico
+Dalla cartella permanente:
 
 ```bash
-curl http://localhost:3000/api/integrity
+cd ~/projects/icec
+./scripts/update.sh
 ```
 
-## Export JSON portabile
-In **Profili & range > Sicurezza dati** usa **Esporta JSON**. Il file contiene ingredienti, ricette, profili e note ed e utile anche per migrazioni applicative.
+Lo script:
+1. verifica branch `next` e working tree pulito;
+2. crea un backup PostgreSQL SQL;
+3. esegue fetch e fast-forward da `origin/next`;
+4. ricostruisce/avvia i container;
+5. attende DB, API e Web healthy;
+6. verifica API e integrita dati.
 
-Il pulsante **Ripristina da JSON** richiede conferma e sostituisce lo stato dell'utente locale nel database.
+Se ci sono modifiche locali non committate, lo script si ferma senza aggiornarle o sovrascriverle.
 
-## Backup PostgreSQL completo
-Prima di un aggiornamento importante:
+## Stato rapido
+
+```bash
+./scripts/status.sh
+```
+
+Mostra versione, stato container, health API e ultimo backup.
+
+## Backup e restore
 
 ```bash
 ./scripts/backup.sh
-```
-
-I backup vengono creati in `backups/` come file SQL.
-
-Per ripristinare:
-
-```bash
 ./scripts/restore.sh backups/icec-YYYYMMDD-HHMMSS.sql
 ```
 
-Il comando richiede di digitare `RESTORE` prima di procedere.
+`restore.sh` richiede conferma esplicita. I backup sono esclusi da Git.
 
-## Test persistenza consigliato
-1. Esegui `./scripts/backup.sh`.
-2. In IceC crea un ingrediente di test e attendi `PostgreSQL · sincronizzato`.
-3. Esegui **Verifica integrita**.
-4. `docker compose down` e poi `docker compose up -d`.
-5. Apri IceC in un secondo browser/incognito: il dato deve essere presente.
+## Comandi quotidiani
 
-## Sicurezza
-- PostgreSQL non espone la porta 5432 a Windows.
-- `docker compose down` conserva i dati.
-- `docker compose down -v` elimina il volume: non usarlo salvo intenzione esplicita di cancellare il database.
+```bash
+docker compose ps
+docker compose logs -f
+docker compose down
+docker compose up -d
+```
+
+Non usare `docker compose down -v` salvo intenzione esplicita di eliminare il database.
