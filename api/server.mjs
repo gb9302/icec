@@ -117,16 +117,16 @@ async function integrityReport(){
 }
 
 const server=http.createServer(async(req,res)=>{try{
- if(req.url==='/api/health'){await pool.query('SELECT 1');return send(res,200,{ok:true,version:'0.7.3'})}
+ if(req.url==='/api/health'){await pool.query('SELECT 1');return send(res,200,{ok:true,version:'0.7.4'})}
  if(req.url==='/api/ocr'&&req.method==='POST'){
   const b=await body(req); const imgs=Array.isArray(b?.imageDataUrls)?b.imageDataUrls.filter(Boolean):(b?.imageDataUrl?[b.imageDataUrl]:[]);if(!imgs.length)return send(res,400,{ok:false,error:'image required'});
   const w=await ocrWorker();const all=[];for(const image of imgs.slice(0,4)){for(const v of await imageVariants(image)){const r=await w.recognize(v.buf);const parsed=parseLabelText(r.data.text,b.documentType||'nutrition');all.push({name:v.name,text:r.data.text,confidence:r.data.confidence||0,parsed,score:variantScore(parsed,r.data.confidence||0)})}}
   return send(res,200,{ok:true,...mergeParsed(all),documentType:b.documentType||'nutrition',imageCount:imgs.length});
  }
  if(req.url==='/api/integrity'&&req.method==='GET'){return send(res,200,await integrityReport())}
- if(req.url==='/api/export'&&req.method==='GET'){const x=await loadState();return send(res,200,{format:'icec-lab-export',version:'0.7.3',exportedAt:new Date().toISOString(),...x},{'content-disposition':'attachment; filename=icec-lab-export.json'})}
+ if(req.url==='/api/export'&&req.method==='GET'){const x=await loadState();return send(res,200,{format:'icec-lab-export',version:'0.7.4',exportedAt:new Date().toISOString(),...x},{'content-disposition':'attachment; filename=icec-lab-export.json'})}
  if(req.url==='/api/state'&&req.method==='GET'){return send(res,200,{ok:true,...await loadState()})}
  if(req.url==='/api/state'&&req.method==='PUT'){const b=await body(req);if(!b?.state||typeof b.state!=='object')return send(res,400,{ok:false,error:'invalid state'});const counts=await replaceState(b.state);return send(res,200,{ok:true,counts})}
  send(res,404,{ok:false,error:'not found'});
  }catch(e){console.error(e);send(res,500,{ok:false,error:e.message})}});
-server.listen(3001,'0.0.0.0',()=>console.log('IceC API v0.7.3 listening on 3001'));
+server.listen(3001,'0.0.0.0',()=>console.log('IceC API v0.7.4 listening on 3001'));
