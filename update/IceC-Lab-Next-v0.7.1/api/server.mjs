@@ -84,16 +84,16 @@ async function integrityReport(){
 }
 
 const server=http.createServer(async(req,res)=>{try{
- if(req.url==='/api/health'){await pool.query('SELECT 1');return send(res,200,{ok:true,version:'0.7.0'})}
+ if(req.url==='/api/health'){await pool.query('SELECT 1');return send(res,200,{ok:true,version:'0.7.1'})}
  if(req.url==='/api/ocr'&&req.method==='POST'){
   const b=await body(req); if(!b?.imageDataUrl)return send(res,400,{ok:false,error:'image required'});
   const w=await ocrWorker(); const r=await w.recognize(b.imageDataUrl); const parsed=parseLabelText(r.data.text,b.documentType||'nutrition');
   return send(res,200,{ok:true,text:r.data.text,confidence:Math.round(r.data.confidence||0),...parsed});
  }
  if(req.url==='/api/integrity'&&req.method==='GET'){return send(res,200,await integrityReport())}
- if(req.url==='/api/export'&&req.method==='GET'){const x=await loadState();return send(res,200,{format:'icec-lab-export',version:'0.7.0',exportedAt:new Date().toISOString(),...x},{'content-disposition':'attachment; filename=icec-lab-export.json'})}
+ if(req.url==='/api/export'&&req.method==='GET'){const x=await loadState();return send(res,200,{format:'icec-lab-export',version:'0.7.1',exportedAt:new Date().toISOString(),...x},{'content-disposition':'attachment; filename=icec-lab-export.json'})}
  if(req.url==='/api/state'&&req.method==='GET'){return send(res,200,{ok:true,...await loadState()})}
  if(req.url==='/api/state'&&req.method==='PUT'){const b=await body(req);if(!b?.state||typeof b.state!=='object')return send(res,400,{ok:false,error:'invalid state'});const counts=await replaceState(b.state);return send(res,200,{ok:true,counts})}
  send(res,404,{ok:false,error:'not found'});
  }catch(e){console.error(e);send(res,500,{ok:false,error:e.message})}});
-server.listen(3001,'0.0.0.0',()=>console.log('IceC API v0.7.0 listening on 3001'));
+server.listen(3001,'0.0.0.0',()=>console.log('IceC API v0.7.1 listening on 3001'));
