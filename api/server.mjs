@@ -13,26 +13,49 @@ async function ocrWorker(){
  if(!ocrWorkerPromise)ocrWorkerPromise=(async()=>{const w=await createWorker('eng');return w})();
  return ocrWorkerPromise;
 }
-function num(v){if(v==null)return null;const n=Number(String(v).replace(/\s/g,'').replace(',','.'));return Number.isFinite(n)?n:null}
-function firstNumber(text,patterns){for(const re of patterns){const m=text.match(re);if(m){const n=num(m[1]);if(n!=null)return n}}return null}
+function num(v){if(v==null)return null;let s=String(v).trim().replace(/\s/g,'').replace(/(?<=\d)[oO](?=\d|\b)/g,'0').replace(',','.');const n=Number(s);return Number.isFinite(n)?n:null}
+const LABELS={
+ kcal:['energia','energy','energie','énergie','valor energetico','valor energético','wartosc energetyczna','wartość energetyczna','kraft'],
+ fat:['grassi','fat','fett','graisses','grasas','vetten','tluszcz','tłuszcz','fett'],
+ carbs:['carboidrati','carbohydrates','kohlenhydrate','glucides','hidratos de carbono','koolhydraten','weglowodany','węglowodany','kolhydrater'],
+ sugars:['di cui zuccheri','of which sugars','davon zucker','dont sucres','de los cuales azucares','de los cuales azúcares','waarvan suikers','w tym cukry','varav sockerarter','zuccheri'],
+ fiber:['fibre','fiber','fibres alimentaires','fibra alimentaria','vezels','blonnik','błonnik'],
+ protein:['proteine','protein','eiweiss','eiweiß','protéines','proteínas','eiwitten','bialko','białko','proteiner'],
+ salt:['sale','salt','salz','sel','sal','zout','sól','sol'],
+ saturatedFat:['acidi grassi saturi','saturates','gesättigte fettsäuren','acides gras saturés','ácidos gras saturados','verzadigde vetzuren','kwasy tluszczowe nasycone','mättade fettsyror']
+};
+function norm(s){return String(s||'').toLowerCase().normalize('NFD').replace(/[\u0300-\u036f]/g,'').replace(/[|]/g,' ').replace(/\s+/g,' ').trim()}
+function hasAny(line,arr){const n=norm(line);return arr.some(x=>n.includes(norm(x)))}
+function values(line){return [...String(line||'').matchAll(/(\d{1,4}(?:[.,]\d{1,2})?)\s*(kcal|kj|g|%|gr\/kg)?/gi)].map(m=>({n:num(m[1]),unit:(m[2]||'').toLowerCase(),raw:m[0]})).filter(x=>x.n!=null)}
+function findRow(lines,key){const aliases=LABELS[key]||[];for(let i=0;i<lines.length;i++){if(hasAny(lines[i],aliases))return {i,line:lines[i]}}return null}
+function numericNear(lines,row,maxAhead=2){if(!row)return [];let a=values(row.line);for(let j=1;j<=maxAhead && a.length===0;j++)a=values(lines[row.i+j]||'');return a}
+function choosePer100(vals,key){let a=vals.filter(x=>x.unit!=='kj'&&x.unit!=='kcal');if(key==='kcal')a=vals.filter(x=>x.unit==='kcal'||(!x.unit&&x.n>=100));if(!a.length)return null;const plausible=a.filter(x=>key==='kcal'?(x.n>=20&&x.n<=1000):(x.n>=0&&x.n<=100));return (plausible[0]||a[0])?.n??null}
+function findDirect(t,patterns){for(const re of patterns){const m=t.match(re);if(m){const n=num(m[1]);if(n!=null)return n}}return null}
 function parseLabelText(text,docType='nutrition'){
- const t=String(text||'').replace(/\r/g,'');
- const out={};
- out.kcal=firstNumber(t,[/(?:energia|energy)[^\n]{0,60}?(\d{2,4})\s*kcal/i,/(\d{2,4})\s*kcal/i]);
- out.carbs=firstNumber(t,[/(?:carboidrati|carbohydrate)[^\n\d]{0,25}(\d+[.,]?\d*)\s*g/i]);
- out.sugars=firstNumber(t,[/(?:di cui zuccheri|of which sugars|sugars)[^\n\d]{0,25}(\d+[.,]?\d*)\s*g/i]);
- out.fat=firstNumber(t,[/(?:grassi|fat)[^\n\d]{0,25}(\d+[.,]?\d*)\s*g/i]);
- out.protein=firstNumber(t,[/(?:proteine|protein)[^\n\d]{0,25}(\d+[.,]?\d*)\s*g/i]);
- out.fiber=firstNumber(t,[/(?:fibre|fiber|fibre alimentari)[^\n\d]{0,25}(\d+[.,]?\d*)\s*g/i]);
- out.salt=firstNumber(t,[/(?:sale|salt)[^\n\d]{0,25}(\d+[.,]?\d*)\s*g/i]);
- out.pac=firstNumber(t,[/\bPAC\b[^\n\d]{0,15}(\d+[.,]?\d*)/i]);
- out.pod=firstNumber(t,[/\bPOD\b[^\n\d]{0,15}(\d+[.,]?\d*)/i]);
- out.solids=firstNumber(t,[/(?:sostanza secca|dry matter|solidi totali)[^\n\d]{0,25}(\d+[.,]?\d*)\s*%?/i]);
- out.water=firstNumber(t,[/(?:umidit[aà]|moisture|acqua)[^\n\d]{0,25}(\d+[.,]?\d*)\s*%?/i]);
- const ing=t.match(/(?:ingredienti|ingredients)\s*[:\-]?\s*([^\n]{5,500})/i); if(ing)out.ingredientsText=ing[1].trim();
- Object.keys(out).forEach(k=>out[k]==null&&delete out[k]);
+ const raw=String(text||'').replace(/\r/g,'');
+ const lines=raw.split('\n').map(x=>x.trim()).filter(Boolean);
+ const out={},fieldConfidence={},evidence={};
+ for(const key of ['fat','carbs','sugars','fiber','protein','salt']){const row=findRow(lines,key);const v=choosePer100(numericNear(lines,row),key);if(v!=null){out[key]=v;fieldConfidence[key]=82;evidence[key]=row?.line||''}}
+ // Energy labels are frequently separated from the numeric cell by OCR, so inspect nearby lines and then the whole document.
+ const er=findRow(lines,'kcal');let ev=choosePer100(numericNear(lines,er,3),'kcal');if(ev==null){const ks=[...raw.matchAll(/(\d{2,4})\s*kcal/gi)].map(m=>num(m[1])).filter(x=>x>=20&&x<=1000);ev=ks[0]??null}if(ev!=null){out.kcal=ev;fieldConfidence.kcal=85;evidence.kcal=er?.line||'kcal'}
+ out.pac=findDirect(raw,[/\bPAC\s*[:=\-]?\s*(\d{1,4}(?:[.,]\d+)?)/i]);
+ out.pod=findDirect(raw,[/\bPOD\s*[:=\-]?\s*(\d{1,4}(?:[.,]\d+)?)/i]);
+ out.solids=findDirect(raw,[/(?:sostanza\s+secca|dry\s+matter|solidi\s+totali)[^\d\n]{0,30}(\d{1,3}(?:[.,]\d+)?)\s*%?/i]);
+ out.water=findDirect(raw,[/(?:umidit[aà]|moisture|acqua)[^\d\n]{0,30}(\d{1,3}(?:[.,]\d+)?)\s*%?/i]);
+ for(const k of ['pac','pod','solids','water'])if(out[k]!=null){fieldConfidence[k]=90;evidence[k]='dato tecnico rilevato'}
+ // Ingredient list may span multiple lines. Capture until a known next section.
+ const im=raw.match(/(?:ingredienti|ingredients)\s*[:\-]?\s*([\s\S]{5,700}?)(?=\n\s*(?:de:|fr:|es:|nl:|pl:|se:|valori nutrizionali|nutritional values|da consumarsi|best before|$))/i);if(im)out.ingredientsText=im[1].replace(/\n/g,' ').replace(/\s+/g,' ').trim();
+ // Plausibility checks and field-level confidence.
+ const warnings=[];
+ if(out.sugars!=null&&out.carbs!=null&&out.sugars>out.carbs+0.2){warnings.push('Zuccheri superiori ai carboidrati: controllare la colonna letta.');fieldConfidence.sugars=Math.min(fieldConfidence.sugars||50,35)}
+ for(const k of ['fat','carbs','sugars','fiber','protein','salt'])if(out[k]!=null&&(out[k]<0||out[k]>100)){warnings.push(`${k}: valore fuori intervallo 0–100 g/100 g.`);fieldConfidence[k]=25}
+ if(out.solids!=null&&out.water!=null&&Math.abs(out.solids+out.water-100)>2)warnings.push('Sostanza secca + umidità non è circa 100%.');
+ // Detect whether the label explicitly refers to 100 g.
+ const per100=/(?:per|su|on|auf|sur|en|op|na|pa)\s*100\s*g|100\s*g\s*(?:di prodotto|product)/i.test(raw);
+ if(!per100)warnings.push('Riferimento per 100 g non riconosciuto con certezza.');
  const found=Object.keys(out).filter(k=>k!=='ingredientsText');
- return {fields:out,found,documentType:docType};
+ const avg=found.length?Math.round(found.reduce((a,k)=>a+(fieldConfidence[k]||60),0)/found.length):0;
+ return {fields:out,found,fieldConfidence,evidence,warnings,per100Detected:per100,parserConfidence:avg,documentType:docType};
 }
 
 async function loadState(){
@@ -84,16 +107,16 @@ async function integrityReport(){
 }
 
 const server=http.createServer(async(req,res)=>{try{
- if(req.url==='/api/health'){await pool.query('SELECT 1');return send(res,200,{ok:true,version:'0.7.1'})}
+ if(req.url==='/api/health'){await pool.query('SELECT 1');return send(res,200,{ok:true,version:'0.7.2'})}
  if(req.url==='/api/ocr'&&req.method==='POST'){
   const b=await body(req); if(!b?.imageDataUrl)return send(res,400,{ok:false,error:'image required'});
   const w=await ocrWorker(); const r=await w.recognize(b.imageDataUrl); const parsed=parseLabelText(r.data.text,b.documentType||'nutrition');
   return send(res,200,{ok:true,text:r.data.text,confidence:Math.round(r.data.confidence||0),...parsed});
  }
  if(req.url==='/api/integrity'&&req.method==='GET'){return send(res,200,await integrityReport())}
- if(req.url==='/api/export'&&req.method==='GET'){const x=await loadState();return send(res,200,{format:'icec-lab-export',version:'0.7.1',exportedAt:new Date().toISOString(),...x},{'content-disposition':'attachment; filename=icec-lab-export.json'})}
+ if(req.url==='/api/export'&&req.method==='GET'){const x=await loadState();return send(res,200,{format:'icec-lab-export',version:'0.7.2',exportedAt:new Date().toISOString(),...x},{'content-disposition':'attachment; filename=icec-lab-export.json'})}
  if(req.url==='/api/state'&&req.method==='GET'){return send(res,200,{ok:true,...await loadState()})}
  if(req.url==='/api/state'&&req.method==='PUT'){const b=await body(req);if(!b?.state||typeof b.state!=='object')return send(res,400,{ok:false,error:'invalid state'});const counts=await replaceState(b.state);return send(res,200,{ok:true,counts})}
  send(res,404,{ok:false,error:'not found'});
  }catch(e){console.error(e);send(res,500,{ok:false,error:e.message})}});
-server.listen(3001,'0.0.0.0',()=>console.log('IceC API v0.7.1 listening on 3001'));
+server.listen(3001,'0.0.0.0',()=>console.log('IceC API v0.7.2 listening on 3001'));
