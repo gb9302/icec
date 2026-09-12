@@ -55,11 +55,11 @@ async function integrityReport(){
 }
 
 const server=http.createServer(async(req,res)=>{try{
- if(req.url==='/api/health'){await pool.query('SELECT 1');return send(res,200,{ok:true,version:'0.4.0'})}
+ if(req.url==='/api/health'){await pool.query('SELECT 1');return send(res,200,{ok:true,version:'0.6.0'})}
  if(req.url==='/api/integrity'&&req.method==='GET'){return send(res,200,await integrityReport())}
- if(req.url==='/api/export'&&req.method==='GET'){const x=await loadState();return send(res,200,{format:'icec-lab-export',version:'0.4.0',exportedAt:new Date().toISOString(),...x},{'content-disposition':'attachment; filename=icec-lab-export.json'})}
+ if(req.url==='/api/export'&&req.method==='GET'){const x=await loadState();return send(res,200,{format:'icec-lab-export',version:'0.6.0',exportedAt:new Date().toISOString(),...x},{'content-disposition':'attachment; filename=icec-lab-export.json'})}
  if(req.url==='/api/state'&&req.method==='GET'){return send(res,200,{ok:true,...await loadState()})}
  if(req.url==='/api/state'&&req.method==='PUT'){const b=await body(req);if(!b?.state||typeof b.state!=='object')return send(res,400,{ok:false,error:'invalid state'});const counts=await replaceState(b.state);return send(res,200,{ok:true,counts})}
  send(res,404,{ok:false,error:'not found'});
  }catch(e){console.error(e);send(res,500,{ok:false,error:e.message})}});
-server.listen(3001,'0.0.0.0',()=>console.log('IceC API v0.4.0 listening on 3001'));
+server.listen(3001,'0.0.0.0',()=>console.log('IceC API v0.6.0 listening on 3001'));
