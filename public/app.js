@@ -1,6 +1,7 @@
 const D=window.ICEC_DATA;
 const KEYS={recipes:'icec_user_recipes_v2',ingredients:'icec_ingredients_v2',profiles:'icec_profiles_v2',recipeMeta:'icec_recipe_meta_v2',productions:'icec_productions_v3',feedbacks:'icec_feedbacks_v4'};
-const ENGINE_VERSION='Next 0.7.0';
+const ENGINE_VERSION='Next 0.7.1';
+const ALLERGENS=['Glutine','Crostacei','Uova','Pesce','Arachidi','Soia','Latte','Frutta a guscio','Sedano','Senape','Sesamo','Anidride solforosa e solfiti','Lupini','Molluschi'];
 const DEFAULT_PROFILES={
  cream:{label:'Creme / base latte',ranges:{sugars:[18,22],fat:[7,16],msnf:[7,12],solids:[37,46],pac:[22,28],pod:[16,22]}},
  choc:{label:'Cioccolato',ranges:{sugars:[18,23],fat:[6,14],msnf:[5,11],solids:[38,48],pac:[22,29],pod:[16,23]}},
