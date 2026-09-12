@@ -1,4 +1,15 @@
-# IceC Lab Next v0.4.0 — Scientific Foundation v2
+# IceC Lab Next v0.5.0 — Smart & Freezing Engine
+
+Questa release unisce Smart Balancer v2 e il primo Freezing & Serving Engine. La previsione di consistenza è volutamente qualitativa: usa temperatura selezionata, PAC relativo al profilo, acqua/solidi e qualità dei dati. Non viene mostrata una percentuale di acqua congelata finché non sarà disponibile una curva crioscopica quantitativa validata.
+
+## Novità v0.5.0
+- diagnostica multivariata con severità (informazione, attenzione, critica);
+- regole combinate PAC/POD/zuccheri/solidi/acqua/grassi e differenze per profilo;
+- spiegazione tecnica aggiuntiva in modalità Avanzata;
+- stima qualitativa della consistenza alla temperatura selezionata;
+- confronto rapido a -10, -12, -14 e -18 °C;
+- confidenza della previsione legata alla qualità dati e copertura zuccherina;
+- nessuna falsa precisione sulla percentuale di acqua congelata.
 
 Novità: tipologia tecnica e produttore per ingrediente; provenienza per i principali dati tecnici; libreria tecnica iniziale; dati produttore prioritari; qualità dell’analisi scientifica e diagnostica prudenziale. Lo schema PostgreSQL resta compatibile: i nuovi attributi sono salvati nel payload JSONB.
 
